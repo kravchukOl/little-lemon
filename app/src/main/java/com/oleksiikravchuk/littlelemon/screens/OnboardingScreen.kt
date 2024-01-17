@@ -1,29 +1,31 @@
 package com.oleksiikravchuk.littlelemon.screens
 
-import androidx.compose.foundation.Image
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.oleksiikravchuk.littlelemon.Home
 import com.oleksiikravchuk.littlelemon.R
+import com.oleksiikravchuk.littlelemon.components.Header
 import com.oleksiikravchuk.littlelemon.ui.theme.mainTypography
 import com.oleksiikravchuk.littlelemon.ui.theme.primaryGreen
 import com.oleksiikravchuk.littlelemon.ui.theme.primaryYellow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Onboarding() {
+fun OnboardingScreen(navController: NavHostController) {
 
     var firstName by remember {
         mutableStateOf("")
@@ -35,7 +37,15 @@ fun Onboarding() {
         mutableStateOf("")
     }
 
-    Column(Modifier.fillMaxWidth()) {
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+
+    val context = LocalContext.current
+
+    Column(
+        Modifier.fillMaxWidth(),
+    ) {
         Header()
         Row(
             Modifier
@@ -53,7 +63,8 @@ fun Onboarding() {
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(16.dp, 32.dp, 16.dp, 0.dp)
+                .padding(16.dp, 32.dp, 16.dp, 0.dp),
+            verticalArrangement = Arrangement.SpaceEvenly
         ) {
             Text(
                 text = "Personal information",
@@ -74,7 +85,6 @@ fun Onboarding() {
                 onValueChange = { firstName = it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 28.dp)
             )
             Text(
                 text = "Last Name",
@@ -87,7 +97,6 @@ fun Onboarding() {
                 onValueChange = { lastName = it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 28.dp)
             )
             Text(
                 text = "Email Name",
@@ -100,34 +109,55 @@ fun Onboarding() {
                 onValueChange = { emailAddress = it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 28.dp)
             )
 
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { showDialog = true },
                 colors = ButtonDefaults.buttonColors(containerColor = primaryYellow),
                 modifier = Modifier.fillMaxWidth(),
-                ) {
+            ) {
                 Text(text = "Register")
             }
-        }
-    }
-}
 
-@Composable
-fun Header() {
-    Row(
-        Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.little_lemon_logo),
-            contentDescription = stringResource(R.string.lemon_logo_description),
-            modifier = Modifier
-                .padding(vertical = 32.dp)
-                .width(180.dp)
-        )
+            if (showDialog) {
+                if (firstName.isBlank() || lastName.isBlank() || emailAddress.isBlank()) {
+                    AlertDialog(
+                        onDismissRequest = { },
+                        title = { Text("Registration unsuccessful.") },
+                        text = { Text("Please enter all data") },
+                        confirmButton = {
+                            Button(onClick = { showDialog = false }) {
+                                Text(text = "Confirm")
+                            }
+                        })
+                } else {
+                    AlertDialog(
+                        onDismissRequest = { },
+                        title = { Text("Registration successful") },
+                        text = { Text("Thank you for your registration") },
+                        confirmButton = {
+
+                            context.getSharedPreferences(
+                                "Settings",
+                                Context.MODE_PRIVATE
+                            ).edit()
+                                .putBoolean("isLoggedIn", true)
+                                .putString("firstName", firstName)
+                                .putString("lastName", lastName)
+                                .putString("email", emailAddress).apply()
+
+                            Button(onClick = {
+                                showDialog = false
+                                navController.navigate(Home.route)
+                            }) {
+                                Text(text = "Go to Home Screen")
+                            }
+                        }
+                    )
+                }
+            }
+
+        }
     }
 }
 
@@ -135,5 +165,7 @@ fun Header() {
 @Preview
 @Composable
 fun OnboardPreview() {
-    Onboarding()
+
+    val navHostController = rememberNavController()
+    OnboardingScreen(navHostController)
 }

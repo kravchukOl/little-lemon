@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">LittleLemon</string>
+    <string name="lemon_logo_description">Little Lemon Header Logo</string>
+    <string name="onboarding_greating">Let\'s get to know you</string>
 </resources>
