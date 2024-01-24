@@ -12,6 +12,7 @@ import com.oleksiikravchuk.littlelemon.screens.HomeScreen
 import com.oleksiikravchuk.littlelemon.screens.HomescreenViewModel
 import com.oleksiikravchuk.littlelemon.screens.OnboardingScreen
 import com.oleksiikravchuk.littlelemon.screens.ProfileScreen
+import com.oleksiikravchuk.littlelemon.ui.theme.LittleLemonTheme
 
 @Composable
 fun NavigationComposable(navController: NavHostController) {
@@ -32,15 +33,16 @@ fun NavigationComposable(navController: NavHostController) {
             OnboardingScreen(navController)
         }
         composable(Home.route) {
-            HomeScreen(
-                navController,
-                HomescreenViewModel(
-                    applicationContext.ktoClient,
-                    applicationContext.itemDao,
-                    applicationContext.getNetworkStatus()
+                HomeScreen(
+                    navController,
+                    HomescreenViewModel(
+                        applicationContext.ktoClient,
+                        applicationContext.itemDao,
+                        applicationContext.getNetworkStatus()
+                    )
                 )
-            )
         }
+
         composable(Profile.route) {
             ProfileScreen(navController)
         }

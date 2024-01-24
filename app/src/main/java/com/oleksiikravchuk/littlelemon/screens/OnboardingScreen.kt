@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import com.oleksiikravchuk.littlelemon.Home
 import com.oleksiikravchuk.littlelemon.R
 import com.oleksiikravchuk.littlelemon.components.Header
+import com.oleksiikravchuk.littlelemon.ui.theme.LittleLemonTheme
 import com.oleksiikravchuk.littlelemon.ui.theme.mainTypography
 import com.oleksiikravchuk.littlelemon.ui.theme.primaryGreen
 import com.oleksiikravchuk.littlelemon.ui.theme.primaryYellow
@@ -26,6 +27,7 @@ import com.oleksiikravchuk.littlelemon.ui.theme.primaryYellow
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OnboardingScreen(navController: NavHostController) {
+
 
     var firstName by remember {
         mutableStateOf("")
@@ -159,6 +161,7 @@ fun OnboardingScreen(navController: NavHostController) {
 
         }
     }
+
 }
 
 

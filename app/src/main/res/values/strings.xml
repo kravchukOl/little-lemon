@@ -2,4 +2,7 @@
     <string name="app_name">LittleLemon</string>
     <string name="lemon_logo_description">Little Lemon Header Logo</string>
     <string name="onboarding_greating">Let\'s get to know you</string>
+    <string name="restaurant_name">Little Lemon</string>
+    <string name="current_city">Chicago</string>
+    <string name="banner_description">We are family owned Mediterranean restaurant, focused on traditional recipes served with a modern twist</string>
 </resources>

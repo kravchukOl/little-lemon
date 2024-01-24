@@ -19,14 +19,6 @@ import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
 
 class MainActivity : ComponentActivity() {
-
-    private val client = HttpClient(Android){
-        install(ContentNegotiation){
-            json(contentType = ContentType("text", "plain"))
-        }
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
