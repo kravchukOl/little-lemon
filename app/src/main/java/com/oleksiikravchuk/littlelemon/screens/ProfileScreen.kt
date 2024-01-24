@@ -1,32 +1,34 @@
 package com.oleksiikravchuk.littlelemon.screens
 
 import android.content.Context
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.oleksiikravchuk.littlelemon.Home
 import com.oleksiikravchuk.littlelemon.Onboarding
 import com.oleksiikravchuk.littlelemon.components.Header
+import com.oleksiikravchuk.littlelemon.ui.theme.LittleLemonTheme
 import com.oleksiikravchuk.littlelemon.ui.theme.mainTypography
-import com.oleksiikravchuk.littlelemon.ui.theme.primaryYellow
-import com.oleksiikravchuk.littlelemon.ui.theme.secondaryOrange
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun ProfileScreen(navController: NavHostController) {
+
 
     val context = LocalContext.current
 
@@ -108,7 +110,9 @@ fun ProfileScreen(navController: NavHostController) {
                     .apply()
                 navController.navigate(Onboarding.route)
             },
-            colors = ButtonDefaults.buttonColors(containerColor = primaryYellow),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.secondary
+            ),
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Log out")
@@ -120,6 +124,9 @@ fun ProfileScreen(navController: NavHostController) {
 @Preview
 @Composable
 fun ProfilePreview() {
-    val navHostController = rememberNavController()
-    ProfileScreen(navHostController)
+    LittleLemonTheme {
+        val navHostController = rememberNavController()
+        ProfileScreen(navHostController)
+    }
+
 }

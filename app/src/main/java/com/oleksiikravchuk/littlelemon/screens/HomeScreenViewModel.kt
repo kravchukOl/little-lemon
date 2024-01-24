@@ -25,6 +25,9 @@ class HomescreenViewModel(
     var isEmpty = mutableStateOf(false)
         private set
 
+    var searchPhrase = mutableStateOf("")
+
+
     init {
         processRecipes()
     }
@@ -73,6 +76,15 @@ class HomescreenViewModel(
                 itemDao.insert(it)
             }
         }
+    }
+
+    fun updateSearchPhrase(search: String) {
+        searchPhrase.value = search
+    }
+
+    fun filterByCategory(category: String){
+        listOfMenuItemState.value =
+            listOfMenuItemState.value.filter { it.category == category }
     }
 
 }

@@ -22,7 +22,7 @@ fun Header( modifier: Modifier = Modifier ) {
             painter = painterResource(id = R.drawable.little_lemon_logo),
             contentDescription = stringResource(R.string.lemon_logo_description),
             modifier = Modifier
-                .padding(vertical = 32.dp)
+                .padding(vertical = 24.dp)
                 .width(180.dp)
         )
     }
