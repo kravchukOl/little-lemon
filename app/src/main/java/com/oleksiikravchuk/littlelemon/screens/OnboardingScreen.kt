@@ -52,35 +52,32 @@ fun OnboardingScreen(navController: NavHostController) {
         Row(
             Modifier
                 .fillMaxWidth()
-                .background(color = primaryGreen),
+                .background(color = MaterialTheme.colorScheme.primary),
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
                 text = stringResource(R.string.onboarding_greating),
-                color = Color.White,
                 fontSize = 24.sp,
+                color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.padding(vertical = 40.dp)
             )
         }
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(16.dp, 32.dp, 16.dp, 0.dp),
+                .padding(16.dp),
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
             Text(
                 text = "Personal information",
-                color = mainTypography,
-                fontSize = 18.sp,
+                fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.SemiBold
             )
 
             Text(
                 text = "First Name",
-                color = mainTypography,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(4.dp)
+                style = MaterialTheme.typography.titleSmall,
             )
             OutlinedTextField(
                 value = firstName,
@@ -90,9 +87,7 @@ fun OnboardingScreen(navController: NavHostController) {
             )
             Text(
                 text = "Last Name",
-                color = mainTypography,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(4.dp)
+                style = MaterialTheme.typography.titleSmall,
             )
             OutlinedTextField(
                 value = lastName,
@@ -101,10 +96,8 @@ fun OnboardingScreen(navController: NavHostController) {
                     .fillMaxWidth()
             )
             Text(
-                text = "Email Name",
-                color = mainTypography,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(4.dp)
+                text = "Email",
+                style = MaterialTheme.typography.titleSmall,
             )
             OutlinedTextField(
                 value = emailAddress,
@@ -115,10 +108,19 @@ fun OnboardingScreen(navController: NavHostController) {
 
             Button(
                 onClick = { showDialog = true },
-                colors = ButtonDefaults.buttonColors(containerColor = primaryYellow),
+                colors = ButtonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary,
+                    disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    disabledContentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                ),
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(text = "Register")
+                Text(
+                    text = "Register",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
             }
 
             if (showDialog) {
@@ -161,7 +163,6 @@ fun OnboardingScreen(navController: NavHostController) {
 
         }
     }
-
 }
 
 
@@ -169,6 +170,8 @@ fun OnboardingScreen(navController: NavHostController) {
 @Composable
 fun OnboardPreview() {
 
-    val navHostController = rememberNavController()
-    OnboardingScreen(navHostController)
+    LittleLemonTheme {
+        val navHostController = rememberNavController()
+        OnboardingScreen(navHostController)
+    }
 }

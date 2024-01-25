@@ -21,12 +21,16 @@ import androidx.compose.ui.unit.dp
 import com.oleksiikravchuk.littlelemon.ui.theme.LittleLemonTheme
 
 @Composable
-fun CategoryChip(title: String, onClick: () -> Unit) {
+fun CategoryChip(
+    title: String,
+    isPressed: Boolean = false,
+    onClick: () -> Unit
+) {
 
 
-    var isPressed by remember {
-        mutableStateOf(false)
-    }
+//    var isPressed by remember {
+//        mutableStateOf(false)
+//    }
 
 
     Box(
@@ -39,7 +43,7 @@ fun CategoryChip(title: String, onClick: () -> Unit) {
                     MaterialTheme.colorScheme.primary
             )
             .clickable {
-                isPressed = !isPressed
+                //isPressed = !isPressed
                 onClick()
             }
 
