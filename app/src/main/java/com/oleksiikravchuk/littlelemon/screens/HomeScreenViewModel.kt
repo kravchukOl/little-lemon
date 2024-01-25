@@ -1,14 +1,22 @@
 package com.oleksiikravchuk.littlelemon.screens
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.util.copy
 import com.oleksiikravchuk.littlelemon.ItemDao
 import com.oleksiikravchuk.littlelemon.MenuItem
 import com.oleksiikravchuk.littlelemon.MenuResponse
+import com.oleksiikravchuk.littlelemon.components.CategoryState
+import com.oleksiikravchuk.littlelemon.utils.DataEntry
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HomescreenViewModel(
@@ -17,9 +25,11 @@ class HomescreenViewModel(
     private val hasNetworkAccess: Boolean
 ) : ViewModel() {
 
-    private val link =
-        "https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu.json"
+    private val link = DataEntry.link
     var listOfMenuItemState = mutableStateOf(listOf<MenuItem>())
+        private set
+
+    var categoryListState = mutableStateListOf<CategoryState>()
         private set
 
     var isEmpty = mutableStateOf(false)
@@ -27,8 +37,8 @@ class HomescreenViewModel(
 
     var searchPhrase = mutableStateOf("")
 
-
     init {
+        categoriesInit()
         processRecipes()
     }
 
@@ -45,27 +55,19 @@ class HomescreenViewModel(
         }
     }
 
-    private fun getRecipesFromCache(): List<MenuItem> {
-        var recipeList = listOf<MenuItem>()
-        viewModelScope.launch{
-            recipeList = itemDao.getAllItems()
+    private fun getRecipesFromCache() {
+        viewModelScope.launch {
+            listOfMenuItemState.value = itemDao.getAllItems()
         }
-        return recipeList
     }
 
     private suspend fun fetchRecipes(): List<MenuItem> {
         val response: MenuResponse = ktorClient.get(link).body()
-        return if (response.menuItem.isNotEmpty())
-            response.menuItem.map {
-                MenuItem(
-                    it.id,
-                    it.title,
-                    it.description,
-                    it.price,
-                    it.image,
-                    it.category
-                )
-            } else {
+        return if (response.menuItem.isNotEmpty()) response.menuItem.map {
+            MenuItem(
+                it.id, it.title, it.description, it.price, it.image, it.category
+            )
+        } else {
             listOf<MenuItem>()
         }
     }
@@ -78,13 +80,33 @@ class HomescreenViewModel(
         }
     }
 
+    private fun categoriesInit() {
+        categoryListState.addAll(DataEntry.categories.map { CategoryState(it) })
+    }
+
+
     fun updateSearchPhrase(search: String) {
         searchPhrase.value = search
     }
 
-    fun filterByCategory(category: String){
-        listOfMenuItemState.value =
-            listOfMenuItemState.value.filter { it.category == category }
+    fun filterByCategory(category: String) {
+        if (!isEmpty.value) {
+            viewModelScope.launch {
+                listOfMenuItemState.value = itemDao.getAllItems()
+                categoryListState.forEach { it.isActive = false }
+                categoryListState.find { it.categoryName.contains(category, true) }?.isActive = true
+
+                listOfMenuItemState.value = listOfMenuItemState.value.filter {
+                    it.category.contains(
+                        category, ignoreCase = true
+                    )
+                }
+            }
+        }
+    }
+
+    fun searchByString(searchPhrase : String) {
+
     }
 
 }
