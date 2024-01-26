@@ -6,4 +6,8 @@
     <string name="current_city">Chicago</string>
     <string name="banner_description">We are family owned Mediterranean restaurant, focused on traditional recipes served with a modern twist</string>
     <string name="search_placeholder">Search for (dishes, ingredients, etc)</string>
+    <string name="user_profile_avatar">User profile avatar</string>
+    <string name="no_internet_access">No internet Access</string>
+    <string name="check_connection">Check your connection and restart app</string>
+    <string name="no_internet">Oopsy! No internet.</string>
 </resources>
