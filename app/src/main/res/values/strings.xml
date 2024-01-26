@@ -5,4 +5,5 @@
     <string name="restaurant_name">Little Lemon</string>
     <string name="current_city">Chicago</string>
     <string name="banner_description">We are family owned Mediterranean restaurant, focused on traditional recipes served with a modern twist</string>
+    <string name="search_placeholder">Search for (dishes, ingredients, etc)</string>
 </resources>

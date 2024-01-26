@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -58,7 +59,9 @@ fun HomeScreen(navHostController: NavHostController, viewModel: HomescreenViewMo
             Header(Modifier.clickable { navHostController.navigate(Profile.route) })
             MainBanner(
                 searchPhrase = viewModel.searchPhrase.value,
-                onSearchPhraseChanged = { viewModel.updateSearchPhrase(it) },
+                onSearchPhraseChanged = {
+                    viewModel.updateSearchPhrase(it)
+                },
             )
             CategoryWidget(categoryUiState) { viewModel.filterByCategory(it) }
             MenuItems(itemsList = viewModel.listOfMenuItemState.value)
@@ -120,13 +123,13 @@ fun MainBanner(
                 onValueChange = onSearchPhraseChanged,
                 singleLine = true,
                 placeholder = {
-                    Text(text = "Search for something new")
+                    Text(text = stringResource(R.string.search_placeholder))
                 },
                 leadingIcon = {
-                    Icon(imageVector = Icons.Outlined.Search, contentDescription = "Search")
+                    Icon(imageVector = Icons.Outlined.Search, contentDescription = "")
 
-                }, modifier = Modifier
-                    .fillMaxWidth()
+                },
+                modifier = Modifier.fillMaxWidth()
             )
 
         }
@@ -137,8 +140,7 @@ fun MainBanner(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CategoryWidget(
-    categories: List<CategoryState>,
-    onCategoryClicked: (String) -> Unit
+    categories: List<CategoryState>, onCategoryClicked: (String) -> Unit
 ) {
     Column(
         Modifier

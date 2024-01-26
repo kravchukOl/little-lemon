@@ -4,7 +4,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.util.copy
 import com.oleksiikravchuk.littlelemon.ItemDao
 import com.oleksiikravchuk.littlelemon.MenuItem
 import com.oleksiikravchuk.littlelemon.MenuResponse
@@ -13,10 +12,6 @@ import com.oleksiikravchuk.littlelemon.utils.DataEntry
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HomescreenViewModel(
@@ -68,7 +63,7 @@ class HomescreenViewModel(
                 it.id, it.title, it.description, it.price, it.image, it.category
             )
         } else {
-            listOf<MenuItem>()
+            listOf()
         }
     }
 
@@ -87,13 +82,14 @@ class HomescreenViewModel(
 
     fun updateSearchPhrase(search: String) {
         searchPhrase.value = search
+        searchByString(searchPhrase.value)
     }
 
     fun filterByCategory(category: String) {
         if (!isEmpty.value) {
             viewModelScope.launch {
-                listOfMenuItemState.value = itemDao.getAllItems()
-                categoryListState.forEach { it.isActive = false }
+                resetMenuItemsAndCategories()
+
                 categoryListState.find { it.categoryName.contains(category, true) }?.isActive = true
 
                 listOfMenuItemState.value = listOfMenuItemState.value.filter {
@@ -105,8 +101,48 @@ class HomescreenViewModel(
         }
     }
 
-    fun searchByString(searchPhrase : String) {
+    private fun searchByString(searchPhrase: String) {
+        if (!isEmpty.value) {
 
+            if(searchPhrase.isBlank()){
+                viewModelScope.launch{
+                    resetMenuItemsAndCategories()
+                }
+                return
+            }
+
+            val listOfSearchWords = searchPhrase.split(" ,.".toRegex(), 8).toMutableList()
+            val searchResult = mutableListOf<MenuItem>()
+
+            viewModelScope.launch {
+                resetMenuItemsAndCategories()
+
+                for (menuItem in listOfMenuItemState.value) {
+
+                    for (searchWord in listOfSearchWords) {
+                        if (searchWord.length <= 2) {
+                            continue
+                        }
+                        if (searchWordInMenuItem(searchWord, menuItem)) {
+                            searchResult.add(menuItem)
+                            break
+                        }
+                    }
+
+                }
+                listOfMenuItemState.value = searchResult
+            }
+        }
+    }
+
+    private suspend fun resetMenuItemsAndCategories() {
+        listOfMenuItemState.value = itemDao.getAllItems()
+        categoryListState.forEach { it.isActive = false }
+    }
+
+    private fun searchWordInMenuItem(word: String, menuItem: MenuItem): Boolean {
+        return menuItem.title.contains(word, true) ||
+                menuItem.description.contains(word, true)
     }
 
 }
