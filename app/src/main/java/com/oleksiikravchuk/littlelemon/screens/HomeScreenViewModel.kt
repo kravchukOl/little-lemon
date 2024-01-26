@@ -30,6 +30,9 @@ class HomescreenViewModel(
     var isEmpty = mutableStateOf(false)
         private set
 
+    var isConnectedToInternet = mutableStateOf(hasNetworkAccess)
+        private set
+
     var searchPhrase = mutableStateOf("")
 
     init {

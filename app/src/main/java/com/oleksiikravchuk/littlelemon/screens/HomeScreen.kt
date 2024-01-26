@@ -8,23 +8,25 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.rounded.WifiOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,7 +45,6 @@ import com.oleksiikravchuk.littlelemon.R
 import com.oleksiikravchuk.littlelemon.components.CategoryChip
 import com.oleksiikravchuk.littlelemon.components.CategoryState
 import com.oleksiikravchuk.littlelemon.components.DishItem
-import com.oleksiikravchuk.littlelemon.components.Header
 import com.oleksiikravchuk.littlelemon.ui.theme.LittleLemonTheme
 import com.oleksiikravchuk.littlelemon.ui.theme.darkGreen33
 import com.oleksiikravchuk.littlelemon.ui.theme.lightYellow52
@@ -56,7 +57,7 @@ fun HomeScreen(navHostController: NavHostController, viewModel: HomescreenViewMo
     Surface(color = MaterialTheme.colorScheme.background) {
         Column(Modifier.fillMaxSize()) {
 
-            Header(Modifier.clickable { navHostController.navigate(Profile.route) })
+            HomeHeader { navHostController.navigate(Profile.route) }
             MainBanner(
                 searchPhrase = viewModel.searchPhrase.value,
                 onSearchPhraseChanged = {
@@ -64,7 +65,12 @@ fun HomeScreen(navHostController: NavHostController, viewModel: HomescreenViewMo
                 },
             )
             CategoryWidget(categoryUiState) { viewModel.filterByCategory(it) }
-            MenuItems(itemsList = viewModel.listOfMenuItemState.value)
+
+            if (viewModel.isEmpty.value || !viewModel.isConnectedToInternet.value) {
+                NoInternetBanner()
+            } else {
+                MenuItems(itemsList = viewModel.listOfMenuItemState.value)
+            }
 
         }
     }
@@ -177,6 +183,67 @@ fun MenuItems(itemsList: List<MenuItem>) {
     }
 }
 
+@Composable
+fun HomeHeader(modifier: Modifier = Modifier, onAvatarClicked: () -> Unit) {
+    Row(
+        modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Spacer(Modifier.width(60.dp))
+
+        Image(
+            painter = painterResource(id = R.drawable.little_lemon_logo),
+            contentDescription = stringResource(R.string.lemon_logo_description),
+            modifier = Modifier
+                .width(150.dp)
+
+        )
+
+        Image(
+            painter = painterResource(id = R.drawable.profile),
+            contentDescription = stringResource(R.string.user_profile_avatar),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(60.dp)
+                .clip(CircleShape)
+                .clickable { onAvatarClicked() }
+
+        )
+    }
+}
+
+@Composable
+fun NoInternetBanner() {
+    Column(
+        Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            imageVector = Icons.Rounded.WifiOff,
+            contentDescription = stringResource(R.string.no_internet_access),
+            tint = MaterialTheme.colorScheme.inversePrimary,
+            modifier = Modifier.size(100.dp)
+        )
+        Text(
+            text = stringResource(R.string.no_internet),
+            fontSize = 18.sp,
+            color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.SemiBold
+        )
+
+        Text(
+            text = stringResource(R.string.check_connection),
+            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+    }
+}
+
 @Preview
 @Composable
 fun Preview() {
@@ -192,6 +259,7 @@ fun Preview() {
                         CategoryState("Drinks"),
                     )
                 ) {}
+                NoInternetBanner()
             }
         }
     }
