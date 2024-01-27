@@ -66,7 +66,7 @@ fun HomeScreen(navHostController: NavHostController, viewModel: HomescreenViewMo
             )
             CategoryWidget(categoryUiState) { viewModel.filterByCategory(it) }
 
-            if (viewModel.isEmpty.value || !viewModel.isConnectedToInternet.value) {
+            if (viewModel.isEmpty.value && !viewModel.isConnectedToInternet.value) {
                 NoInternetBanner()
             } else {
                 MenuItems(itemsList = viewModel.listOfMenuItemState.value)
