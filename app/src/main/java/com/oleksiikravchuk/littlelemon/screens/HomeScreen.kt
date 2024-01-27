@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.rounded.PedalBike
 import androidx.compose.material.icons.rounded.WifiOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -66,7 +67,7 @@ fun HomeScreen(navHostController: NavHostController, viewModel: HomescreenViewMo
             )
             CategoryWidget(categoryUiState) { viewModel.filterByCategory(it) }
 
-            if (viewModel.isEmpty.value || !viewModel.isConnectedToInternet.value) {
+            if (viewModel.isEmpty.value && !viewModel.isConnectedToInternet.value) {
                 NoInternetBanner()
             } else {
                 MenuItems(itemsList = viewModel.listOfMenuItemState.value)
@@ -153,12 +154,20 @@ fun CategoryWidget(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Text(
-            text = "ORDER FOR DELIVERY!",
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
-            modifier = Modifier.padding(bottom = 12.dp)
-        )
+        Row {
+            Text(
+                text = "ORDER FOR DELIVERY!",
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(bottom = 12.dp),
+            )
+
+            Icon(
+                imageVector = Icons.Rounded.PedalBike, contentDescription = "",
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+        }
 
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
